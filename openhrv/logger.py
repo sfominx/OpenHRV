@@ -13,12 +13,12 @@ class Logger(QObject):
 
     def start_recording(self, file_path: str):
         if self.file:
-            self.status_update.emit(f"Already writing to a file at {self.file.name}.")
+            self.status_update.emit(f"Запись уже идет в {self.file.name}.")
             return  # only write to one file at a time
         self.file = open(file_path, "a+")
         self.file.write("event,value,timestamp\n")  # header
         self.recording_status.emit(0)
-        self.status_update.emit(f"Started recording to {self.file.name}.")
+        self.status_update.emit(f"Начата запись в {self.file.name}.")
 
     def save_recording(self):
         """Called when:
@@ -29,7 +29,7 @@ class Logger(QObject):
             return
         self.file.close()
         self.recording_status.emit(1)
-        self.status_update.emit(f"Saved recording at {self.file.name}.")
+        self.status_update.emit(f"Запись сохранена в {self.file.name}.")
         self.file = None
 
     def write_to_file(self, data: NamedSignal):

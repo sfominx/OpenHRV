@@ -97,7 +97,7 @@ class Model(QObject):
                 validated_ibi = MAX_IBI
             else:
                 validated_ibi = median_ibi
-            print(f"Correcting invalid IBI: {ibi} to {validated_ibi}")
+            print(f"Исправление недопустимого интервала между ударами: {ibi} на {validated_ibi}")
 
         return validated_ibi
 
@@ -126,7 +126,7 @@ class Model(QObject):
             return  # wait until buffer is full
         threshold = max(map(abs, self._hrv_buffer)) * 4
         if local_hrv > threshold:
-            print(f"Correcting outlier HRV {local_hrv} to {threshold}")
+            print(f"Исправление выброса ВСР {local_hrv} на {threshold}")
             local_hrv = threshold
         self._hrv_buffer.append(local_hrv)
         self.update_mean_hrv_buffer()

@@ -200,25 +200,25 @@ class View(QMainWindow):
         self.ibis_widget = XYSeriesWidget(
             self.model.ibis_seconds, self.model.ibis_buffer
         )
-        self.ibis_widget.x_axis.setTitleText("Seconds")
+        self.ibis_widget.x_axis.setTitleText("Секунды")
         # The time series displays only the samples within the last
         # IBI_HISTORY_DURATION seconds,
         # even though there are more samples in self.model.ibis_seconds.
         self.ibis_widget.x_axis.setRange(-IBI_HISTORY_DURATION, 0.0)
         self.ibis_widget.x_axis.setTickCount(7)
         self.ibis_widget.x_axis.setTickInterval(10.0)
-        self.ibis_widget.y_axis.setTitleText("Inter-Beat-Interval (msec)")
+        self.ibis_widget.y_axis.setTitleText("Интервал между ударами (мс)")
         self.ibis_widget.y_axis.setRange(MIN_PLOT_IBI, MAX_PLOT_IBI)
 
         self.hrv_widget = XYSeriesWidget(
             self.model.mean_hrv_seconds, self.model.mean_hrv_buffer, WHITE
         )
-        self.hrv_widget.x_axis.setTitleText("Seconds")
+        self.hrv_widget.x_axis.setTitleText("Секунды")
         # The time series displays only the samples within the last
         # MEANHRV_HISTORY_DURATION seconds,
         # even though there are more samples in self.model.mean_hrv_seconds.
         self.hrv_widget.x_axis.setRange(-MEANHRV_HISTORY_DURATION, 0)
-        self.hrv_widget.y_axis.setTitleText("HRV (msec)")
+        self.hrv_widget.y_axis.setTitleText("ВСР (мс)")
         self.hrv_widget.y_axis.setRange(0, self.model.hrv_target)
         colorgrad = QLinearGradient(0, 0, 0, 1)  # horizontal gradient
         colorgrad.setCoordinateMode(QGradient.ObjectMode)
@@ -242,11 +242,11 @@ class View(QMainWindow):
         self.pacer_rate.valueChanged.connect(self.model.update_breathing_rate)
         self.pacer_rate.setValue(breathing_rate_to_tick(MAX_BREATHING_RATE))
 
-        self.pacer_toggle = QCheckBox("Show pacer", self)
+        self.pacer_toggle = QCheckBox("Показать регулятор", self)
         self.pacer_toggle.setChecked(True)
         self.pacer_toggle.stateChanged.connect(self.toggle_pacer)
 
-        self.hrv_target_label = QLabel(f"Target: {self.model.hrv_target}")
+        self.hrv_target_label = QLabel(f"Цель: {self.model.hrv_target}")
 
         self.hrv_target = QSlider(Qt.Horizontal)
         self.hrv_target.setRange(MIN_HRV_TARGET, MAX_HRV_TARGET)
@@ -254,32 +254,32 @@ class View(QMainWindow):
         self.hrv_target.valueChanged.connect(self.model.update_hrv_target)
         self.hrv_target.setSliderPosition(self.model.hrv_target)
 
-        self.scan_button = QPushButton("Scan")
+        self.scan_button = QPushButton("Сканировать")
         self.scan_button.clicked.connect(self.scanner.scan)
 
         self.address_menu = QComboBox()
 
-        self.connect_button = QPushButton("Connect")
+        self.connect_button = QPushButton("Подключить")
         self.connect_button.clicked.connect(self.connect_sensor)
 
-        self.disconnect_button = QPushButton("Disconnect")
+        self.disconnect_button = QPushButton("Отключить")
         self.disconnect_button.clicked.connect(self.disconnect_sensor)
 
-        self.start_recording_button = QPushButton("Start")
+        self.start_recording_button = QPushButton("Начать")
         self.start_recording_button.clicked.connect(self.get_filepath)
 
-        self.save_recording_button = QPushButton("Save")
+        self.save_recording_button = QPushButton("Сохранить")
         self.save_recording_button.clicked.connect(self.logger.save_recording)
 
         self.annotation = QComboBox()
         self.annotation.setEditable(True)
         self.annotation.setDuplicatesEnabled(False)
-        self.annotation_button = QPushButton("Annotate")
+        self.annotation_button = QPushButton("Аннотировать")
         self.annotation_button.clicked.connect(self.emit_annotation)
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
 
-        self.recording_status_label = QLabel("Status:")
+        self.recording_status_label = QLabel("Статус:")
         self.recording_statusbar = QProgressBar()
         self.recording_statusbar.setRange(0, 1)
 
@@ -301,20 +301,20 @@ class View(QMainWindow):
         self.device_config.addWidget(self.address_menu, 0, 1)
         self.device_config.addWidget(self.connect_button, 1, 0)
         self.device_config.addWidget(self.disconnect_button, 1, 1)
-        self.device_panel = QGroupBox("ECG Devices")
+        self.device_panel = QGroupBox("Устройства ЭКГ")
         self.device_panel.setLayout(self.device_config)
         self.hlayout1.addWidget(self.device_panel, stretch=25)
 
         self.hrv_config = QFormLayout()
         self.hrv_config.addRow(self.hrv_target_label, self.hrv_target)
-        self.hrv_panel = QGroupBox("HRV Settings")
+        self.hrv_panel = QGroupBox("Параметры ВСР")
         self.hrv_panel.setLayout(self.hrv_config)
         self.hlayout1.addWidget(self.hrv_panel, stretch=25)
 
         self.pacer_config = QFormLayout()
         self.pacer_config.addRow(self.pacer_label, self.pacer_rate)
         self.pacer_config.addRow(self.pacer_toggle)
-        self.pacer_panel = QGroupBox("Breathing Pacer")
+        self.pacer_panel = QGroupBox("Регулятор дыхания")
         self.pacer_panel.setLayout(self.pacer_config)
         self.hlayout1.addWidget(self.pacer_panel, stretch=25)
 
@@ -325,7 +325,7 @@ class View(QMainWindow):
         # row, column, rowspan, columnspan
         self.recording_config.addWidget(self.annotation, 1, 0, 1, 2)
         self.recording_config.addWidget(self.annotation_button, 1, 2)
-        self.recording_panel = QGroupBox("Recording")
+        self.recording_panel = QGroupBox("Запись")
         self.recording_panel.setLayout(self.recording_config)
         self.hlayout1.addWidget(self.recording_panel, stretch=25)
 
@@ -336,7 +336,7 @@ class View(QMainWindow):
 
     def closeEvent(self, _):
         """Shut down all threads."""
-        print("Closing threads...")
+        print("Закрытие потоков...")
 
         self.sensor.disconnect_client()
 
@@ -349,14 +349,14 @@ class View(QMainWindow):
         # native file dialog not reliable on Windows (most likely COM issues)
         file_path: str = QFileDialog.getSaveFileName(
             None,
-            "Create file",
+            "Создать файл",
             default_file_name,
             options=QFileDialog.DontUseNativeDialog,
         )[0]
         if not file_path:  # user cancelled or closed file dialog
             return
         if not valid_path(file_path):
-            self.show_status("File path is invalid or exists already.")
+            self.show_status("Путь к файлу недействителен или файл уже существует.")
             return
         self.signals.start_recording.emit(file_path)
 
@@ -366,7 +366,7 @@ class View(QMainWindow):
         # discard device name
         address: str = self.address_menu.currentText().split(",")[1].strip()
         if not valid_address(address):
-            print(f"Invalid sensor address: {address}.")
+            print(f"Неверный адрес сенсора: {address}.")
             return
         sensor: list[QBluetoothDeviceInfo] = [
             s for s in self.model.sensors if get_sensor_address(s) == address
@@ -391,11 +391,11 @@ class View(QMainWindow):
         self.pacer_widget.update_series(*coordinates)
 
     def update_pacer_label(self, rate: NamedSignal):
-        self.pacer_label.setText(f"Rate: {rate.value}")
+        self.pacer_label.setText(f"Частота: {rate.value}")
 
     def update_hrv_target(self, target: NamedSignal):
         self.hrv_widget.y_axis.setRange(0, target.value)
-        self.hrv_target_label.setText(f"Target: {target.value}")
+        self.hrv_target_label.setText(f"Цель: {target.value}")
 
     def toggle_pacer(self):
         visible = self.pacer_widget.isVisible()
