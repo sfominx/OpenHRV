@@ -17,6 +17,10 @@ from openhrv.config import (
     MIN_HRV_TARGET,
     MAX_HRV_TARGET,
     HRV_MEAN_WINDOW,
+    MIN_STRESS,
+    MAX_STRESS,
+    STRESS_BUFFER_SIZE,
+    STRESS_HISTORY_DURATION
 )
 
 
@@ -35,6 +39,12 @@ class Model(QObject):
         self.ibis_seconds: deque[float] = deque(
             map(float, range(-IBI_BUFFER_SIZE, 1)), IBI_BUFFER_SIZE
         )
+
+        self.stress_buffer: deque[int] = deque([1000] * STRESS_BUFFER_SIZE, STRESS_BUFFER_SIZE)
+        self.stress_seconds: deque[float] = deque(
+            map(float, range(-STRESS_BUFFER_SIZE, 1)), STRESS_BUFFER_SIZE
+        )
+
         self.mean_hrv_buffer: deque[float] = deque(
             [-1] * MEANHRV_BUFFER_SIZE, MEANHRV_BUFFER_SIZE
         )
@@ -124,11 +134,15 @@ class Model(QObject):
     def update_hrv_buffer(self, local_hrv):
         if not self._hrv_buffer[0]:
             return  # wait until buffer is full
+
         threshold = max(map(abs, self._hrv_buffer)) * 4
+
         if local_hrv > threshold:
             print(f"Исправление выброса ВСР {local_hrv} на {threshold}")
             local_hrv = threshold
+
         self._hrv_buffer.append(local_hrv)
+        self.stress_buffer.append(local_hrv / MAX_HRV_TARGET * 100)
         self.update_mean_hrv_buffer()
 
     def update_mean_hrv_buffer(self):

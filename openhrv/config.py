@@ -13,15 +13,25 @@ min_heart_rate = 30
 max_heart_rate = 220
 MIN_IBI: Final[int] = ceil(60_000 / max_heart_rate)
 MAX_IBI: Final[int] = ceil(60_000 / min_heart_rate)
+
+MIN_STRESS: Final[int] = ceil(60_000 / 100)
+MAX_STRESS: Final[int] = 0
+
 MIN_PLOT_IBI: Final[int] = 300
 MAX_PLOT_IBI: Final[int] = 1500
 
+MIN_PLOT_STRESS: Final[int] = 0
+MAX_PLOT_STRESS: Final[int] = 100
 
 HRV_BUFFER_SIZE: Final[int] = 10  # samples
 # IBI buffer must hold enough samples such that even if IBIs (on average) were
 # MIN_IBI long, there'd be enough samples to display for IBI_HISTORY_DURATION seconds.
 IBI_HISTORY_DURATION: Final[int] = 60  # seconds
 IBI_BUFFER_SIZE: Final[int] = ceil(IBI_HISTORY_DURATION / (MIN_IBI / 1000))  # samples
+
+STRESS_HISTORY_DURATION: Final[int] = 60  # seconds
+STRESS_BUFFER_SIZE: Final[int] = ceil(STRESS_HISTORY_DURATION / (MIN_STRESS / 1000))  # samples
+
 MEANHRV_HISTORY_DURATION: Final[int] = 120  # seconds
 MEANHRV_BUFFER_SIZE: Final[int] = ceil(
     MEANHRV_HISTORY_DURATION / (MIN_IBI / 1000)

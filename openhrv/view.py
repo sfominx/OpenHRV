@@ -30,12 +30,15 @@ from openhrv.config import (
     breathing_rate_to_tick,
     MEANHRV_HISTORY_DURATION,
     IBI_HISTORY_DURATION,
+    STRESS_HISTORY_DURATION,
     MAX_BREATHING_RATE,
     MIN_BREATHING_RATE,
     MIN_HRV_TARGET,
     MAX_HRV_TARGET,
     MIN_PLOT_IBI,
     MAX_PLOT_IBI,
+    MIN_PLOT_STRESS,
+    MAX_PLOT_STRESS
 )
 from openhrv import __version__ as version, resources  # noqa
 
@@ -210,6 +213,19 @@ class View(QMainWindow):
         self.ibis_widget.y_axis.setTitleText("Интервал между ударами (мс)")
         self.ibis_widget.y_axis.setRange(MIN_PLOT_IBI, MAX_PLOT_IBI)
 
+        self.stress_widget = XYSeriesWidget(
+            self.model.stress_seconds, self.model.stress_buffer
+        )
+        self.stress_widget.x_axis.setTitleText("Секунды")
+        # The time series displays only the samples within the last
+        # IBI_HISTORY_DURATION seconds,
+        # even though there are more samples in self.model.ibis_seconds.
+        self.stress_widget.x_axis.setRange(-STRESS_HISTORY_DURATION, 0.0)
+        self.stress_widget.x_axis.setTickCount(7)
+        self.stress_widget.x_axis.setTickInterval(10.0)
+        self.stress_widget.y_axis.setTitleText("Уровень стресса")
+        self.stress_widget.y_axis.setRange(MIN_PLOT_STRESS, MAX_PLOT_STRESS)
+
         self.hrv_widget = XYSeriesWidget(
             self.model.mean_hrv_seconds, self.model.mean_hrv_buffer, WHITE
         )
@@ -289,7 +305,8 @@ class View(QMainWindow):
 
         self.hlayout0 = QHBoxLayout()
         self.hlayout0.addWidget(self.ibis_widget)
-        self.hlayout0.addWidget(self.pacer_widget)
+        # self.hlayout0.addWidget(self.pacer_widget)
+        self.hlayout0.addWidget(self.stress_widget)
         self.vlayout0.addLayout(self.hlayout0, stretch=50)
 
         self.vlayout0.addWidget(self.hrv_widget, stretch=50)
@@ -316,7 +333,7 @@ class View(QMainWindow):
         self.pacer_config.addRow(self.pacer_toggle)
         self.pacer_panel = QGroupBox("Регулятор дыхания")
         self.pacer_panel.setLayout(self.pacer_config)
-        self.hlayout1.addWidget(self.pacer_panel, stretch=25)
+        # self.hlayout1.addWidget(self.pacer_panel, stretch=25)
 
         self.recording_config = QGridLayout()
         self.recording_config.addWidget(self.start_recording_button, 0, 0)
